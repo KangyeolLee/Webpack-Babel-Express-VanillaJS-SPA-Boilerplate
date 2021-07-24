@@ -1,36 +1,38 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/main.js",
+  mode: 'development',
+  entry: './src/main.ts',
   module: {
     rules: [
       {
         test: /\.(ts|js)$/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
         },
-        exclude: ["/node_modules"],
+        exclude: ['/node_modules'],
       },
       {
-        test: /\.html&/,
+        test: /\.html$/,
         use: [
           {
-            loader: "html-loader",
-            options: { minimize: ture },
+            loader: 'html-loader',
+            options: { minimize: true },
           },
         ],
       },
       {
         test: /\.(css|scss)$/,
-        use: ["css-loader", "sass-loader"],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(svg|png|jpg|jpeg|gif)/,
         use: {
-          laoder: "file-loader",
+          loader: 'url-loader',
           options: {
             limit: 10000,
           },
@@ -39,26 +41,26 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: "./index.html" }),
+    new HtmlWebpackPlugin({ template: './src/index.html' }),
     new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css",
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
   ],
   optimization: { minimize: true },
   output: {
-    path: path.join(__dirname, "./dist"),
-    filename: "[name].js",
+    path: path.join(__dirname, './dist'),
+    filename: '[name].js',
   },
   devServer: {
     historyApiFallback: true,
     proxy: {
-      "/api": "http://localhost:3000",
+      '/api': 'http://localhost:3000',
     },
   },
   resolve: {
-    modules: [path.join(__dirname), "node_modules"],
-    extensions: [".ts", ".js", ".json", ".scss"],
+    modules: [path.join(__dirname, './src'), 'node_modules'],
+    extensions: ['.ts', '.js', '.json', '.scss'],
   },
-  devtool: "source-map",
+  devtool: 'source-map',
 };
