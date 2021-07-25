@@ -6,6 +6,9 @@ export default class Component {
   constructor($target: HTMLElement, $props?: any) {
     this.$target = $target;
     this.$props = $props;
+    this.setup();
+    this.render();
+    this.setEvent();
   }
 
   setup() {}
@@ -27,7 +30,10 @@ export default class Component {
 
   setEvent() {}
 
-  setState() {}
+  setState(nextState: any) {
+    this.$state = { ...this.$state, ...nextState };
+    this.render();
+  }
 
   render() {
     const template = this.template();

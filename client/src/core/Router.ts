@@ -1,12 +1,12 @@
 import { isClass } from '../utils/types';
 
-type RouterType = {
+export type RouterType = {
   $app: any;
   routes: Route[];
   fallback?: string;
 };
 
-type Route = {
+export type Route = {
   path: string;
   redirect?: string;
   component?: any;
