@@ -3,6 +3,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -27,14 +28,26 @@ module.exports = {
       },
       {
         test: /\.(css|scss)$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: './assets/',
+            },
+          },
+          'css-loader',
+          'resolve-url-loader',
+          'sass-loader',
+        ],
       },
       {
-        test: /\.(svg|png|jpg|jpeg|gif)/,
+        test: /\.(svg|png|jpg|jpeg|gif)$/i,
         use: {
           loader: 'url-loader',
           options: {
-            limit: 10000,
+            name: 'assets/[hash].[ext]',
+            limit: 5000,
+            esModule: false,
           },
         },
       },
@@ -46,6 +59,7 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new CleanWebpackPlugin(),
   ],
   optimization: { minimize: true },
   output: {
@@ -53,13 +67,11 @@ module.exports = {
     filename: '[name].js',
   },
   devServer: {
+    hot: true,
     historyApiFallback: true,
-    proxy: {
-      '/api': 'http://localhost:3000',
-    },
   },
   resolve: {
-    modules: [path.join(__dirname, './src'), 'node_modules'],
+    modules: ['node_modules'],
     extensions: ['.ts', '.js', '.json', '.scss'],
   },
   devtool: 'source-map',
