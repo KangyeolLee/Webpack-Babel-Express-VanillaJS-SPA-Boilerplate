@@ -1,3 +1,4 @@
+import './reset';
 import { initRouter, Route } from './core/Router';
 import Home from './Components/Home';
 import Test from './Components/Test';
