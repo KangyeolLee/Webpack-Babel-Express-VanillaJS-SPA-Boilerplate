@@ -1,16 +1,16 @@
-import './index.scss';
-import { test } from './module';
-import { logo } from './assets';
+import { initRouter, Route } from './core/Router';
+import Home from './Components/Home';
+import Test from './Components/Test';
 
 const $app = document.getElementById('app');
-$app!.innerHTML = 'hello world';
+const routes: Route[] = [
+  { path: '/', redirect: '/home' },
+  { path: '/home', component: Home },
+  { path: '/test', component: Test },
+];
 
-const $back = document.createElement('div');
-$back.classList.add('back');
-$back.style.backgroundImage = `url(${logo})`;
-$app?.append($back);
+function init() {
+  initRouter({ $app, routes });
+}
 
-const arr = [1, 2, 3];
-arr.includes(3);
-
-console.log(test);
+init();
