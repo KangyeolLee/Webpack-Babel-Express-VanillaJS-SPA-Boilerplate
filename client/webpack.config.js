@@ -18,35 +18,17 @@ module.exports = {
         exclude: ['/node_modules'],
       },
       {
-        test: /\.html$/,
-        use: [
-          {
-            loader: 'html-loader',
-            options: { minimize: true },
-          },
-        ],
-      },
-      {
         test: /\.(css|scss)$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: './assets/',
-            },
-          },
-          'css-loader',
-          'sass-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(svg|png|jpg|jpeg|gif)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: {
           loader: 'url-loader',
           options: {
-            name: 'assets/[hash].[ext]',
-            limit: 5000,
             esModule: false,
+            limit: 8192,
+            name: 'assets/[name]?[hash].[ext]',
           },
         },
       },
@@ -62,12 +44,16 @@ module.exports = {
   ],
   optimization: { minimize: true },
   output: {
+    publicPath: '/',
     path: path.join(__dirname, './dist'),
     filename: '[name].js',
   },
   devServer: {
-    hot: true,
-    historyApiFallback: true,
+    contentBase: path.join(__dirname, 'dist'),
+    publicPath: '/',
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
   },
   resolve: {
     modules: ['node_modules'],
