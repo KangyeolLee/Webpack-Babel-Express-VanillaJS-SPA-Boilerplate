@@ -1,7 +1,7 @@
 {
-  "name": "bolierplate-vanilla-spa",
+  "name": "boilerplate-client",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "main.ts",
   "scripts": {
     "start": "webpack serve",
     "build": "webpack"
