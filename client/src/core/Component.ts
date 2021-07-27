@@ -3,12 +3,14 @@ export default class Component {
   $state: any;
   $props?: any;
 
-  constructor($target: HTMLElement, $props?: any) {
+  constructor($target: HTMLElement, $state?: any, $props?: any) {
     this.$target = $target;
+    this.$state = $state;
     this.$props = $props;
     this.setup();
     this.render();
     this.setEvent();
+    this.setUnmountEvent();
   }
 
   setup() {}
@@ -17,7 +19,7 @@ export default class Component {
     return ``;
   }
 
-  addEvet(eventType: string, selector: string, callback: Function) {
+  addEvent(eventType: string, selector: string, callback: Function) {
     const children: Element[] = [...this.$target.querySelectorAll(selector)];
     const isTarget = (target: Element) =>
       children.includes(target) || target.closest(selector);
@@ -46,4 +48,13 @@ export default class Component {
   }
 
   mounted() {}
+
+  setUnmountEvent() {
+    document.addEventListener(
+      'willbeunmounted',
+      this.willbeunmounted.bind(this)
+    );
+  }
+
+  willbeunmounted() {}
 }
