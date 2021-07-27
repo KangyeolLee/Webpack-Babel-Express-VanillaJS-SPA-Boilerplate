@@ -49,6 +49,7 @@ module.exports = {
     filename: '[name].js',
   },
   devServer: {
+    historyApiFallback: true,
     contentBase: path.join(__dirname, 'dist'),
     publicPath: '/',
     proxy: {
@@ -58,6 +59,9 @@ module.exports = {
   resolve: {
     modules: ['node_modules'],
     extensions: ['.ts', '.js', '.json', '.scss'],
+    alias: {
+      '@': path.join(__dirname, 'src'),
+    },
   },
   devtool: 'source-map',
 };
