@@ -1,13 +1,13 @@
 import './reset';
-import { initRouter, Route } from './core/Router';
-import Home from './Components/Home';
-import Test from './Components/Test';
+import { initRouter, Route } from '@/Core/Router';
+import Home from '@/View/Home/index';
+import Detail from '@/View/Detail';
 
-const $app = document.getElementById('app');
+const $app = document.getElementById('app') as HTMLElement;
 const routes: Route[] = [
   { path: '/', redirect: '/home' },
   { path: '/home', component: Home },
-  { path: '/test', component: Test },
+  { path: '/detail', component: Detail },
 ];
 
 function init() {
