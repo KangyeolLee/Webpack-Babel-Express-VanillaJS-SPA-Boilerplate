@@ -1,7 +1,8 @@
-import { isClass } from '../utils/types';
+import { isClass } from '@/utils/types';
+import { customEventEmitter } from '@/utils/helper';
 
 export type RouterType = {
-  $app: any;
+  $app: HTMLElement;
   routes: Route[];
   fallback?: string;
 };
@@ -17,7 +18,7 @@ class Router {
   routes: {
     [key: string]: Route;
   } = {};
-  fallback: string = '/';
+  fallback: string;
 
   constructor({ $app, routes, fallback = '/' }: RouterType) {
     this.$app = $app;
@@ -33,7 +34,11 @@ class Router {
   }
 
   initEvent() {
-    window.addEventListener('hashchange', () => this.onHashChangeHandler());
+    document.addEventListener(
+      'moveroutes',
+      this.moveroutesHandler.bind(this) as EventListener
+    );
+    window.addEventListener('popstate', this.popstateHandler.bind(this));
   }
 
   getRoute(path: string) {
@@ -53,19 +58,21 @@ class Router {
     return component;
   }
 
-  onHashChangeHandler() {
-    this.$app.innerHTML = '';
+  moveroutesHandler(event: CustomEvent) {
+    const path: string = event.detail.path;
+    history.pushState(event.detail, '', path);
+    this.renderComponent(path, event.detail);
+  }
 
-    const hash = window.location.hash;
-    const path = hash.substr(1);
+  popstateHandler() {
+    this.renderComponent(history.state.path, history.state);
+  }
 
+  renderComponent(path: string, detail: object) {
     let route: Route;
-    const regex = /\w{1,}$/;
 
     if (this.hasRoute(path)) {
       route = this.getRoute(path);
-    } else if (regex.test(path)) {
-      route = this.getRoute(path.replace(regex, ':id'));
     } else {
       route = this.getRoute(this.fallback);
     }
@@ -75,16 +82,32 @@ class Router {
       return;
     }
 
+    console.log(route);
+
     const component = this.getComponent(route);
     if (component && isClass(component)) {
-      new component(this.$app);
+      this.unmountComponent();
+
+      new component(this.$app, detail);
     } else {
       throw new Error('[라우터 에러] 유효한 형식의 라우터가 아닙니다.');
     }
+
+    // console.log('현재 페이지를 언마운트(내용 초기화, 이벤트 제거)하고 나서');
+    // console.log('해당하는 페이지로 history.pushState');
+    // console.log('path에 해당하는 컴포넌트를 가져오고');
+    // console.log('해당하는 컴포넌트를 화면에 렌더링!');
+  }
+
+  unmountComponent() {
+    customEventEmitter('willbeunmounted');
   }
 
   push(path: string) {
-    window.location.hash = path;
+    customEventEmitter('moveroutes', {
+      ...history.state,
+      path,
+    });
   }
 }
 
@@ -99,5 +122,10 @@ export function initRouter(options: RouterType) {
     push: (path) => router.push(path),
   };
 
-  router.onHashChangeHandler();
+  customEventEmitter(
+    'moveroutes',
+    history.state ?? {
+      path: '/',
+    }
+  );
 }
