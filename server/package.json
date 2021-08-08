@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development nodemon --watch \"**\" --ext \"ts\" --exec \"ts-node --files\" app",
+    "prod": "cross-env NODE_ENV=production nodemon --watch \"**\" --ext \"ts\" --exec \"ts-node --files\" app"
   },
   "author": "",
   "license": "ISC",
