@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import config from '../config';
 
-export default ({ app }: { app: express.Application }) => {
+export default async ({ app }: { app: express.Application }) => {
   app.set('port', config.port || 3000);
 
   app.use(express.json());
