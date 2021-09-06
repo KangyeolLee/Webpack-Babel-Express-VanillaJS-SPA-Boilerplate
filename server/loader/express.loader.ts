@@ -1,11 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
 import config from '../config';
+import routes from '../api';
 
 export default async ({ app }: { app: express.Application }) => {
   app.set('port', config.port || 3000);
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(routes());
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     const err = new Error('Not Found') as any;
